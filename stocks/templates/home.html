@@ -1,0 +1,170 @@
+<title>Fence Street</title>
+{% extends 'base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% load humanize %}
+{% load num_format %}
+{% load tz %}
+{% block content %}
+
+    {% if ticker %}
+
+        <style>
+            body {
+                background-image: url(https://res.cloudinary.com/takeout/image/upload/v1614360405/115b_zyzhnr.png);
+                background-position: center;
+                background-size: cover;
+                background-attachment: fixed;
+            }
+        </style>
+
+        {% if not user.is_authenticated %}
+
+            <h1 style="text-align:center"><b>Welcome to Fence Street</b> <i class="fas fa-comment-dollar"></i></h1>
+
+        {% else %}
+
+            <h1 style="text-align:center"><b>Hey {{ user.get_username }}</b></h1>
+
+        {% endif %}
+
+        <p style="text-align:center">{{ ticker }}</p>
+
+        <form action="{% url 'home' %}" class="d-flex" method="POST">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="NVAX, TLSA..." aria-label="Search" name="ticker">
+            <button class="btn btn-light btn-outline-dark" type="submit">Get quote</button>
+        </form>
+
+    {% endif %}
+
+    {% if stock %}
+
+        {% if stock == 404 %}
+            <b style="color:red">There was an error with your request, please try again.</b><br>
+
+        {% else %}
+
+            <div class="container">
+
+                <h1 style="display: inline-block">{{stock.companyName}} ({{stock.symbol}})</h1>
+
+                {% if stock.isUSMarketOpen %}
+                    <span class="badge rounded-pill bg-success" style="vertical-align: top"><b>open</b></span><br>
+                {% else %}
+                    <span class="badge rounded-pill bg-danger" style="vertical-align: top"><b>closed</b></span><br>
+                {% endif %}
+
+                <h2><b>${{stock.latestPrice}}</b></h2>
+
+                {% if stock.change < 0 %}
+                    <span><b style="color:red">{{stock.change}}</b></span>
+                {% else %}
+                    <span><b style="color:green">+{{stock.change}}</b></span>
+                {% endif %}
+
+                {% if stock.changePercent < 0 %}
+                    <b style="color:red">({{ stock.changePercent | mul:100 |stringformat:".2f"}}%)</b>
+                {% else %}
+                    <b style="color:green">(+{{ stock.changePercent | mul:100 |stringformat:".2f"}}%)</b>
+                {% endif %}
+
+                <br>
+
+                {% if not stock.isUSMarketOpen %}
+                    <small style="font-size:12px">After hours: ${{stock.extendedPrice}}
+                        <span>
+                            {% if stock.extendedChange < 0 %}
+                                <b style="color:red">{{stock.extendedChange}}</b>
+                            {% else %}
+                                <b style="color:green">+{{stock.extendedChange}}%</b>
+                            {% endif %}
+
+                            {% if stock.extendedChangePercent < 0 %}
+                                <b style="color:red">({{stock.extendedChangePercent | mul:100 |stringformat:".2f"}}%)</b>
+                            {% else %}
+                                <b style="color:green">(+{{stock.extendedChangePercent | mul:100 |stringformat:".2f"}}%)</b>
+                            {% endif %}
+                        </span>
+                    </small>
+                {% endif %}
+
+                <div class="card border-0 text-center">
+                    {{ candlestick | safe }}
+                </div>
+
+            </div>
+
+            <div class="container">
+
+            <h5>Fundamentals</h5>
+
+            <div class="row row-cols-2">
+                <div class="col">Open Price: <b>{{stock.open}}</b></div>
+                <div class="col">P/E ratio: <b>{{stock.peRatio}}</b></div>
+                <div class="col">Latest volume: <b>{{stock.latestVolume | num_format}}</b></div>
+                <div class="col">Market cap: <b>{{stock.marketCap | num_format}}</b></div>
+                <div class="col">Week 52 High: <b>{{stock.week52High}}</b></div>
+                <div class="col">Week 52 Low: <b>{{stock.week52Low}}</b></div>
+                <div class="col">YTD Change: <b>{{stock.ytdChange|stringformat:".3f"}}</b></div>
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+{% if company %}
+
+    {% if company == 404 %}
+        Company info can not be displayed right now.
+
+    {% else %}
+        <br>
+        Industry: <b>{{ company.industry }}</b><br>
+        Sector: <b>{{ company.sector }}</b><br>
+        CEO: <b>{{ company.CEO }}</b>
+    {% endif %}
+
+{% endif %}
+
+</div>
+
+    <div class="container">
+        <div class="card border-0 text-center">
+            {{ scatter | safe }}
+        </div>
+    </div>
+
+
+    {% if news %}
+
+        {% if news == 404 %}
+
+            News can not be displayed right now.
+
+        {% else %}
+            <h5>Latest news</h5>
+            <div class="card-group">
+
+                {% for item in news %}
+                    <div class="card px-3 border-0 d-flex flex-column justify-content-between" style="max-width: 14rem;">
+                        <img class="card-img-top" src={{ item.image }}>
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <b><a href={{ item.url }}>{{ item.headline }}</a></b>
+                            </h6>
+                            <small class="text-muted">Source: {{ item.source }}</small>
+                        </div>
+                    </div>
+                    <br><br>
+                {% endfor%}
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+    </div>
+
+{% endblock %}

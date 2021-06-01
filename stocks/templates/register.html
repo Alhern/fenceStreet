@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Create an account{% endblock %}
+
+{% block content %}
+
+{# on vire les helpers, c'est moche et pas utile ici #}
+
+    <style>
+        .helptext {
+            display: none;
+        }
+    </style>
+
+    <div class="container">
+        <div class="col-sm-6">
+            <div class="panel-heading h1">
+                Create an account
+            </div>
+
+            <p>Please sign up using the following form:</p>
+
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <p><button type="submit" class="btn btn-primary">Register</button></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Simulator{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <h1>{{ user.get_username }}'s portfolio</h1>
+        <h3><i class="fas fa-money-bill" style="color:mediumseagreen"></i> ${{wallet}}</h3>
+
+        {% if portfolio %}
+
+            <br>
+
+            <table class="table table-borderless table-sm table-hover text-center">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">TICKER</th>
+                    <th scope="col">QTY</th>
+                    <th scope="col">PURCHASE PRICE</th>
+                    <th scope="col">CURRENT PRICE</th>
+                    <th scope="col">CHANGE</th>
+                    <th scope="col">TOTAL VALUE</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for id, ticker, quantity, bought, current, change, total in bought_and_current %}
+                    <tr>
+                        <th scope="row">{{id}}</th>
+                        <td>{{ticker}}</td>
+                        <td>{{quantity}}</td>
+                        <td>{{bought}}</td>
+                        <td>{{current}}</td>
+                        {% if change < 0 %}
+                            <td><b style="color:red">{{change}}%</b></td>
+                        {% else %}
+                            <td><b style="color:mediumseagreen">+{{change}}%</b></td>
+                        {% endif %}
+                        <td>{{total}}</td>
+                        <td><a href="{% url 'sell' id=id qty=quantity bought_price=bought current_price=current %}">SELL</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        {% endif %}
+
+        <br>
+
+        <h1>Order stock</h1>
+        <p>Please add a ticker and the quantity of shares you'd like to buy.</p>
+        <form action="{% url 'simulator' %}" method="POST">
+            <div class="row mb-3">
+                {% csrf_token %}
+                <label>Ticker</label>
+                <div class="col-sm-10">
+                    <input class="form-control me-2" type="search" placeholder="NVAX, TLSA..." aria-label="Search" name="ticker">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label>Quantity</label>
+                <div class="col-sm-10">
+                    <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
+                </div>
+            </div>
+            <button class="btn btn-outline-dark" type="submit">Buy</button>
+        </form>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+    </div>
+
+{% endblock %}
