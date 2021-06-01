@@ -1,2 +1,15 @@
+# Your API keys
 stocks/keys.py
+
+# Virtual env for Pycharm
 venv
+
+# Backup files
+*.bak
+
+# Database
+db.sqlite3
+
+*.log
+*.pyc
+__pycache__
