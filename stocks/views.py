@@ -402,7 +402,7 @@ def register(req):
             user.save()
             user = authenticate(username=username, password=raw_password)
             login(req, user)
-            wallet = Wallet(wallet=25000, user=req.user)
+            wallet = Wallet(wallet=25000, user=req.user)  # on a un wallet de 25k quand on s'enregistre
             wallet.save()
             messages.success(req, ("Account created succesfully.\nYou're now logged in."))
             return redirect(home)
