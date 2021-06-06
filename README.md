@@ -29,6 +29,35 @@ Finally, to start the app:
 
     python3 manage.py runserver
 
+## How to contribute?
+You can check ['Issues'](https://github.com/Alhern/fenceStreet/issues) to contribute to the project, issues tagged with `TODO` are tasks to work on, if you want to work on one of them leave a comment to let others know that you're working on it. 
+
+Once you're done, you can do a Pull Request mentioning which Issue you solved (ex : *Historique des transactions #2*...)
+
+### Pull requests
+ :warning: Don't forget to keep your repo up-to-date (`git pull` locally) to prevent conflicts.
+
+Short version:
+
+1. Fork.
+1. Clone.
+1. `git check out -b [name-of-your-feature]`
+1. Write your code.
+1. `git commit -a -m [your-commit-message]`
+1. `git push --set-upstream origin [name-of-your-feature]`
+
+Long version:
+
+[Contributing to a project](http://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project)
+
+Visual:
+
+![img](https://res.cloudinary.com/takeout/image/upload/v1622997074/git-fork-clone-flow_w6x3an.png "https://www.earthdatascience.org/courses/intro-to-earth-data-science/git-github/github-collaboration/update-github-repositories-with-changes-by-others/")
+
+### Problems, suggestions, etc
+
+Feel free to make suggestions, if you encounter a bug or any issue that you can't fix, you can create an Issue (['Create an issue'](https://github.com/Alhern/fenceStreet/issues))
+
 ## Credits
 This app has been built with:
 * `Python 3`
