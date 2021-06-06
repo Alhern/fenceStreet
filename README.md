@@ -1,5 +1,7 @@
 # Fence Street
-A New York Stock Exchange app using Django and IEX Cloud.
+[FR version](README_FR.md)
+
+A New York Stock Exchange simulator app using Django and IEX Cloud.
 
 ## Requirements
  :warning: To be able to use Fence Street you must have an [IEX Cloud](https://iexcloud.io/) API key and an [Alpha Vantage](https://www.alphavantage.co/support/#api-key) API key. 
