@@ -37,7 +37,9 @@ SANDBOX_URL = 'https://sandbox.iexapis.com/stable'
 PROD_URL = 'https://cloud.iexapis.com/stable'
 
 # Switch ici entre la sandbox et la prod
+# (/!\ SANDBOX_URL avec TOKEN_S, PROD_URL avec TOKEN_P)
 BASE_URL = SANDBOX_URL
+BASE_TOKEN = TOKEN_S
 
 #################################
 
@@ -46,7 +48,7 @@ BASE_URL = SANDBOX_URL
 def get_all_tickers():
     all_tickers = []
     try:
-        data = requests.get(f'{BASE_URL}/ref-data/symbols?token={TOKEN_S}')
+        data = requests.get(f'{BASE_URL}/ref-data/symbols?token={BASE_TOKEN}')
     except requests.exceptions.HTTPError as e:
         print("An HTTP error occurred: the API is temporarily unavailable.")
         print(e)
@@ -76,9 +78,9 @@ def home(req):
             # on initialise TimeSeries pour pouvoir réaliser 2 graphiques concernant l'entreprise demandée via des appels aux fonctions candlestick() et scatter()
             ts = TimeSeries(key=TOKEN_ALPHA, output_format='pandas')
 
-            stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={TOKEN_S}')
-            company_data = requests.get(f'{BASE_URL}/stock/{ticker}/company?token={TOKEN_S}')
-            news_data = requests.get(f'{BASE_URL}/stock/{ticker}/news/last/3?token={TOKEN_S}')
+            stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
+            company_data = requests.get(f'{BASE_URL}/stock/{ticker}/company?token={BASE_TOKEN}')
+            news_data = requests.get(f'{BASE_URL}/stock/{ticker}/news/last/3?token={BASE_TOKEN}')
 
             try:
                 stock = json.loads(stock_data.content)
@@ -152,7 +154,7 @@ def simulator(req):
 
         for item in portfolio_tickers:
             try:
-                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={TOKEN_S}')
+                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
                 data.raise_for_status()
                 stock = json.loads(data.content)
                 # après un appel vers l'API on récupère le prix actuel de l'action/stock et on le range dans la liste current_prices
@@ -190,7 +192,7 @@ def simulator(req):
         # si le ticker existe réellement, on envoie une requête à l'API
         if ticker.upper() in ALL_TICKERS:
 
-            stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={TOKEN_S}')
+            stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
 
             try:
                 stock = json.loads(stock_data.content)
@@ -318,7 +320,7 @@ def watchlist(req):
 
         for item in symbol: # pour chaque entreprise dans sa liste, on va récupérer ses infos via l'API
             try:
-                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={TOKEN_S}')
+                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
                 data.raise_for_status()
                 stock = json.loads(data.content)
                 full_data.append(stock)
