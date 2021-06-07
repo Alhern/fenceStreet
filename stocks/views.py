@@ -236,12 +236,9 @@ def simulator(req):
                     wallet = float(user_wallet.wallet)   # permet de mettre à jour le wallet sur la page quand on achète (ça ne marche pas ici parce que je ne fais pas de retour du wallet...)
                     updated_portfolio = Portfolio(user=req.user, symbol=ticker, quantity=quantity, price=price)
                     updated_portfolio.save()
-                    messages.success(req, ("Successfully bought, please refresh your portfolio.")) # voir si on peut arranger ça, histoire de ne pas avoir à rafraichir la page pour voir notre nouveau portefeuille
+                    messages.success(req, ("Successfully bought!"))
 
-            return render(req, 'simulator.html', {'wallet': wallet,
-                                                  'portfolio': portfolio,
-                                                  'bought_and_current': bought_and_current
-                                                  })
+            return redirect(simulator)
 
         else:
             messages.error(req, ("Stock can't be displayed. Make sure the ticker exists."))
