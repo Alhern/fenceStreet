@@ -58,14 +58,14 @@
             <form action="{% url 'simulator' %}" method="POST">
                 <div class="row mb-3">
                     {% csrf_token %}
-                    <label>Ticker</label>
+                    <label>Ticker name</label>
                     <div class="col-sm-10">
                         <input class="form-control me-2" type="search" placeholder="GOOG, RKT..." aria-label="Search" name="ticker">
                     </div>
                 </div>
 
                 <div class="row mb-3">
-                    <label>Quantity</label>
+                    <label>Quantity to buy</label>
                     <div class="col-sm-10">
                         <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
                     </div>
@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label>Quantity</label>
+                    <label>Quantity to sell</label>
                     <div class="col-sm-10">
                         <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
                     </div>
