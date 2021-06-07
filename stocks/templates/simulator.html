@@ -38,7 +38,7 @@
                             <td><b style="color:mediumseagreen">+{{change}}%</b></td>
                         {% endif %}
                         <td>{{total}}</td>
-                        <td><a href="{% url 'sell' id=id qty=quantity bought_price=bought current_price=current %}">SELL</a></td>
+                        <td><a href="{% url 'sell_all' id=id qty=quantity bought_price=bought current_price=current %}">SELL</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -48,30 +48,66 @@
 
         <br>
 
+    <div class="row">
+
         <h1>Order stock</h1>
-        <p>Please add a ticker and the quantity of shares you'd like to buy.</p>
-        <form action="{% url 'simulator' %}" method="POST">
-            <div class="row mb-3">
-                {% csrf_token %}
-                <label>Ticker</label>
-                <div class="col-sm-10">
-                    <input class="form-control me-2" type="search" placeholder="NVAX, TLSA..." aria-label="Search" name="ticker">
-                </div>
-            </div>
+        <p>Please add a ticker (or its ID) and the quantity of shares you'd like to buy or sell.</p>
 
-            <div class="row mb-3">
-                <label>Quantity</label>
-                <div class="col-sm-10">
-                    <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
-                </div>
-            </div>
-            <button class="btn btn-outline-dark" type="submit">Buy</button>
-        </form>
+        <div class="col-6">
 
-        <br>
-        <br>
-        <br>
-        <br>
+            <form action="{% url 'simulator' %}" method="POST">
+                <div class="row mb-3">
+                    {% csrf_token %}
+                    <label>Ticker</label>
+                    <div class="col-sm-10">
+                        <input class="form-control me-2" type="search" placeholder="GOOG, RKT..." aria-label="Search" name="ticker">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label>Quantity</label>
+                    <div class="col-sm-10">
+                        <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-success" type="submit">Buy</button>
+
+            </form>
+
+        </div>
+
+        <div class="col-6">
+
+            <form action="{% url 'sell' %}" method="POST">
+
+                <div class="row mb-3">
+                    {% csrf_token %}
+                    <label>Ticker ID #</label>
+                    <div class="col-sm-10">
+                        <input class="form-control me-2" type="search" placeholder="18, 20..." aria-label="Search" name="stock_id">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label>Quantity</label>
+                    <div class="col-sm-10">
+                        <input class="form-control me-2" type="search" placeholder="100?" aria-label="Search" name="quantity">
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-danger" type="submit">Sell</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
 
     </div>
 

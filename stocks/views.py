@@ -121,7 +121,13 @@ def about(req):
     return render(req, 'about.html', {})
 
 
-# View du simulateur
+#################################
+#################################
+##     S I M U L A T E U R     ##
+#################################
+#################################
+
+# Affichage du portfolio + fonction d'achat de stocks intégrée
 def simulator(req):
     # on commence par récupérer le wallet de l'utilisateur
     user_wallet = Wallet.objects.get(user=req.user)
@@ -246,8 +252,8 @@ def simulator(req):
                                               'bought_and_current': bought_and_current})
 
 
-# Fonction de vente en cours de test + écriture...
-def sell(req, id, qty, bought_price, current_price):
+# Fonction de vente de tous les stocks sélectionnés (pour des raisons de tests, on ne supprime pas encore les stocks vendus de la BDD)
+def sell_all(req, id, qty, bought_price, current_price):
     user_wallet = Wallet.objects.get(user=req.user)
     wallet = float(user_wallet.wallet)
     sold_stock = Portfolio.objects.get(id=id, user=req.user)
@@ -282,12 +288,85 @@ def sell(req, id, qty, bought_price, current_price):
         sold_stock.save() # on enregistre la nouvelle quantité dans la BDD
 
     # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
-    new_wallet = wallet + change
+    print(f"Ajout de ${total_current} à notre wallet de {wallet}")
+    new_wallet = wallet + total_current
     user_wallet.wallet = new_wallet
     user_wallet.save()
 
     return redirect(simulator)
 
+
+# Fonction de vente des stocks suivant la quantité et l'ID entrées par l'utilisateur (pour des raisons de tests, on ne supprime pas encore le(s) stock(s) vendu(s) de la BDD)
+def sell(req):
+    # on commence par récupérer le wallet de l'utilisateur
+    user_wallet = Wallet.objects.get(user=req.user)
+    # on le converti en float pour pouvoir réaliser nos calculs
+    wallet = float(user_wallet.wallet)
+
+    if req.method == 'POST':
+
+        stock_id = req.POST['stock_id']
+
+        try:
+            sold_stock = Portfolio.objects.get(id=stock_id, user=req.user)
+            original_qty = sold_stock.quantity
+        except Exception as e:
+            messages.error(req, "This stock ID doesn't exist")
+            return redirect(simulator)
+
+        qty = int(req.POST['quantity'])
+
+        if qty > original_qty:
+            messages.error(req, "You can't sell more than what you own.")
+            return redirect(simulator)
+
+        ticker = Portfolio.objects.get(id=stock_id, user=req.user).symbol
+
+        stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
+
+        try:
+            stock = json.loads(stock_data.content)
+
+        except Exception as e:
+            print(e)
+            stock = 404
+
+        current_price = float(stock['latestPrice'])
+        bought_price = float(Portfolio.objects.get(id=stock_id, user=req.user).price)
+
+        # on fait les totaux ici concernant le montant que l'on a payé le jour de l'achat et le montant que l'on va recevoir si on vend maintenant
+        total_original = float(bought_price) * qty
+        total_current = float(current_price) * qty
+        change = float(total_current) - float(total_original)
+
+        if change < 0:
+            print("sold at a loss")
+            messages.error(req, "You've sold at a loss...")
+        else:
+            print("You've sold for a profit!")
+            messages.success(req, "You've sold for a profit!")
+
+        # on a tout vendu, on peut supprimer le stock (pour tester on se contente juste d'un print pour le moment)
+        if qty == original_qty:
+            print("Needs to be deleted due to quantity sold")
+            # sold_stock.delete()
+        else:
+        # sinon on soustrait la quantité vendue à la quantité totale
+            original_qty -= qty
+            print("new qty =", original_qty)
+            sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
+
+        # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
+        print(f"Ajout de ${total_current} à notre wallet de {wallet}")
+        new_wallet = wallet + total_current
+        user_wallet.wallet = new_wallet
+        user_wallet.save()
+
+    return redirect(simulator)
+
+###################################
+# fin des fonctions du simulateur #
+###################################
 
 
 # La watchlist permet de surveiller des entreprises sélectionnées, on peut les ajouter et les supprimer (à l'aide de la fonction delete()) d'un tableau
@@ -411,6 +490,7 @@ def register(req):
     else:
         form = RegisterForm()
     return render(req, 'register.html', {'form': form})
+
 
 # View d'identification
 def user_login(req):
