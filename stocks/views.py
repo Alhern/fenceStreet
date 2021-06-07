@@ -282,7 +282,8 @@ def sell_all(req, id, qty, bought_price, current_price):
         # sinon on soustrait la quantité vendue à la quantité totale
         original_qty -= qty
         print("new qty =", original_qty)
-        sold_stock.save() # on enregistre la nouvelle quantité dans la BDD
+        #sold_stock.quantity = original_qty
+        #sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
 
     # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
     print(f"Ajout de ${total_current} à notre wallet de {wallet}")
@@ -351,7 +352,8 @@ def sell(req):
         # sinon on soustrait la quantité vendue à la quantité totale
             original_qty -= qty
             print("new qty =", original_qty)
-            sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
+            #sold_stock.quantity = original_qty
+            #sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
 
         # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
         print(f"Ajout de ${total_current} à notre wallet de {wallet}")
