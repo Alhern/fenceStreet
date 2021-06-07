@@ -78,9 +78,11 @@ def home(req):
             # on initialise TimeSeries pour pouvoir réaliser 2 graphiques concernant l'entreprise demandée via des appels aux fonctions candlestick() et scatter()
             ts = TimeSeries(key=TOKEN_ALPHA, output_format='pandas')
 
-            stock_data = requests.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
-            company_data = requests.get(f'{BASE_URL}/stock/{ticker}/company?token={BASE_TOKEN}')
-            news_data = requests.get(f'{BASE_URL}/stock/{ticker}/news/last/3?token={BASE_TOKEN}')
+            session = requests.Session()
+
+            stock_data = session.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
+            company_data = session.get(f'{BASE_URL}/stock/{ticker}/company?token={BASE_TOKEN}')
+            news_data = session.get(f'{BASE_URL}/stock/{ticker}/news/last/3?token={BASE_TOKEN}')
 
             try:
                 stock = json.loads(stock_data.content)
@@ -158,9 +160,11 @@ def simulator(req):
     # s'il y a au moins une entreprise dans le portfolio, on affiche ses infos
     if len(portfolio_tickers) != 0:
 
+        session = requests.Session()  # on créé une connexion persistante réutilisable, chaque requête sera plus rapide
+
         for item in portfolio_tickers:
             try:
-                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
+                data = session.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
                 data.raise_for_status()
                 stock = json.loads(data.content)
                 # après un appel vers l'API on récupère le prix actuel de l'action/stock et on le range dans la liste current_prices
@@ -396,9 +400,11 @@ def watchlist(req):
         symbol = Stock.objects.filter(user=req.user) # on récupère les entreprises de sa watchlist
         full_data = []
 
+        session = requests.Session()
+
         for item in symbol: # pour chaque entreprise dans sa liste, on va récupérer ses infos via l'API
             try:
-                data = requests.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
+                data = session.get(f'{BASE_URL}/stock/{item}/quote?token={BASE_TOKEN}')
                 data.raise_for_status()
                 stock = json.loads(data.content)
                 full_data.append(stock)
