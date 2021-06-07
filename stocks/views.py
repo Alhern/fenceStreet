@@ -288,7 +288,7 @@ def sell(req, id, qty, bought_price, current_price):
 
 
 
-# If you gaze long enough into this function, the function will gaze back into you
+# La watchlist permet de surveiller des entreprises sélectionnées, on peut les ajouter et les supprimer (à l'aide de la fonction delete()) d'un tableau
 def watchlist(req):
     if req.method == 'POST':
         if req.user.is_authenticated:  # faut être identifié pour ajouter une entreprise à la watchlist
