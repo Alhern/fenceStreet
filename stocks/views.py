@@ -476,7 +476,7 @@ def scatter(ticker, ts):
 
 
 # Pour que l'utilisateur enregistre son compte sur le site
-# TODO: vérifier que le mot de passe soit identique : pw1 == pw2, je pense qu'il faut directement modifier à partir de forms.py
+# TODO: vérifier que le mot de passe soit identique : pw1 == pw2, je pense qu'il faut directement modifier à partir de forms.py => fait dans forms.py
 def register(req):
     if req.method == 'POST':
         form = RegisterForm(req.POST)
