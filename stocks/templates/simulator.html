@@ -38,7 +38,7 @@
                             <td><b style="color:mediumseagreen">+{{change}}%</b></td>
                         {% endif %}
                         <td>{{total}}</td>
-                        <td><a href="{% url 'sell_all' id=id %}">SELL</a></td>
+                        <td><a class="btn btn-outline-danger btn-sm" href="{% url 'sell_all' id=id %}">Sell All</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -47,6 +47,10 @@
         {% endif %}
 
         <br>
+
+    <hr class="divider">
+
+    <br>
 
     <div class="row">
 
@@ -103,6 +107,51 @@
         </div>
 
     </div>
+
+    <br>
+    <br>
+
+    <hr class="divider">
+
+    <br>
+
+        <h1>Transaction history</h1>
+        <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">Date (GMT)</th>
+            <th scope="col">Type</th>
+            <th scope="col">Ticker</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+
+       {% for i in history reversed %}  {# ordre descendant #}
+
+            {% if i.transaction == "BUY" %}
+                <tr style="background-color: #edf7f2">
+                    <th scope="row">{{ i.date|date:"d/m/Y - H:i:s" }}</th>
+                    <td>{{ i.transaction }}</td>
+                    <td>{{ i.symbol }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>{{ i.price }}</td>
+                </tr>
+            {% else %}
+                <tr style="background-color:#fceff0">
+                <th scope="row">{{ i.date|date:"d/m/Y - H:i:s" }}</th>
+                <td>{{ i.transaction }}</td>
+                <td>{{ i.symbol }}</td>
+                <td>{{ i.quantity }}</td>
+                <td>{{ i.price }}</td>
+            </tr>
+
+            {% endif %}
+        {% endfor %}
+
+        </tbody>
+        </table>
 
     <br>
     <br>

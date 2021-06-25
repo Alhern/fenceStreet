@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 
-from .models import Stock, Portfolio, Wallet
+from .models import Stock, Portfolio, Wallet, History
 from .forms import StockForm, RegisterForm, LoginForm
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.utils import timezone
 
 from alpha_vantage.timeseries import TimeSeries
 
 import plotly.graph_objs as go
-import datetime  # on va en avoir besoin pour réaliser l'histoire des transactions
 from plotly.offline import plot
 
 import requests
@@ -137,6 +137,7 @@ def simulator(req):
     wallet = float(user_wallet.wallet)
     # on récupère le portfolio de l'utilisateur
     portfolio = Portfolio.objects.filter(user=req.user)
+    history = History.objects.filter(user=req.user)
 
     # on va utiliser plusieurs listes pour récupérer des données du Portfolio
     # + prix actuels issus de l'API + différences, totaux, et on va zipper le tout
@@ -240,6 +241,8 @@ def simulator(req):
                     wallet = float(user_wallet.wallet)   # permet de mettre à jour le wallet sur la page quand on achète (ça ne marche pas ici parce que je ne fais pas de retour du wallet...)
                     updated_portfolio = Portfolio(user=req.user, symbol=ticker, quantity=quantity, price=price)
                     updated_portfolio.save()
+                    updated_history = History(user=req.user, symbol=ticker, quantity=quantity, price=total_price, transaction="BUY", date=timezone.now())
+                    updated_history.save()
                     messages.success(req, ("Successfully bought!"))
 
             return redirect(simulator)
@@ -250,7 +253,8 @@ def simulator(req):
     else:
         return render(req, 'simulator.html', {'wallet': wallet,
                                               'portfolio': portfolio,
-                                              'bought_and_current': bought_and_current})
+                                              'bought_and_current': bought_and_current,
+                                              'history': history})
 
 
 # Fonction de vente de tous les stocks sélectionnés (pour des raisons de tests, on ne supprime pas encore les stocks vendus de la BDD)
@@ -300,6 +304,9 @@ def sell_all(req, id):
     new_wallet = wallet + total_current
     user_wallet.wallet = new_wallet
     user_wallet.save()
+
+    updated_history = History(user=req.user, symbol=ticker, quantity=original_qty, price=total_current, transaction="SELL", date=timezone.now())
+    updated_history.save()
 
     return redirect(simulator)
 
@@ -370,6 +377,9 @@ def sell(req):
         new_wallet = wallet + total_current
         user_wallet.wallet = new_wallet
         user_wallet.save()
+
+        updated_history = History(user=req.user, symbol=ticker, quantity=qty, price=total_current, transaction="SELL", date=timezone.now())
+        updated_history.save()
 
     return redirect(simulator)
 

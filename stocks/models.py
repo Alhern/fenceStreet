@@ -49,3 +49,13 @@ class Portfolio(models.Model):
         return str(self.user)
 
 
+class History(models.Model):
+    user = models.ForeignKey(User, default=None, null=True, blank=True, on_delete=models.CASCADE)
+    symbol = SymbolField(max_length=5, validators=[RegexValidator('^[a-zA-Z]*$')])
+    quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=20, decimal_places=2)
+    transaction = models.CharField(max_length=5)
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user)
