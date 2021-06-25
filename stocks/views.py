@@ -254,40 +254,46 @@ def simulator(req):
 
 
 # Fonction de vente de tous les stocks sélectionnés (pour des raisons de tests, on ne supprime pas encore les stocks vendus de la BDD)
-def sell_all(req, id, qty, bought_price, current_price):
+# UPDATE : le 25/06/21, refonte de la fonction qui avait une sacré vulnérabilité,
+# illustration : sell_all/18/4/205.83/204.2 envoie les informations suivantes à la fonction :
+# vendre 4 actions du #18 achetées à 205.83 et qui coûtent maintenant 204.2, absolument rien n'empêchait
+# un utilisateur de tricher en changeant les informations du lien pour se faire beaucoup plus d'argent :)
+def sell_all(req, id):
     user_wallet = Wallet.objects.get(user=req.user)
     wallet = float(user_wallet.wallet)
     sold_stock = Portfolio.objects.get(id=id, user=req.user)
+    bought_price = float(sold_stock.price)
     original_qty = sold_stock.quantity
+    ticker = sold_stock.symbol
 
-    # TODO: mettre un message pour dire qu'on peut acheter un nombre max de QTY que l'on doit définir (calcul à définir)
-    if qty > original_qty:
-        messages.error(req, "You can't sell more than what you own.")
-        return redirect(simulator)
+    session = requests.Session()
+
+    stock_data = session.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
+
+    try:
+        stock = json.loads(stock_data.content)
+
+    except Exception as e:
+        print(e)
+        stock = 404
+
+    current_price = float(stock['latestPrice'])
 
     # on fait les totaux ici concernant le montant que l'on a payé le jour de l'achat et le montant que l'on va recevoir si on vend maintenant
-    total_original = float(bought_price) * qty
-    total_current = float(current_price) * qty
+    total_original = float(bought_price) * original_qty
+    total_current = float(current_price) * original_qty
     change = float(total_current) - float(total_original)
 
     # si on ajoute un système de points, définir les scores ici (-perte ou +profit)
     if change < 0:
-        print("sold at a loss")
+        #print("sold at a loss")
         messages.warning(req, "You've sold at a loss...")
     else:
-        print("You've sold for a profit!")
+        #print("You've sold for a profit!")
         messages.success(req, "You've sold for a profit!")
 
     # on a tout vendu, on peut supprimer le stock (pour tester on se contente juste d'un print pour le moment)
-    if qty == original_qty:
-        print("Needs to be deleted due to quantity sold")
-        #sold_stock.delete()
-    else:
-        # sinon on soustrait la quantité vendue à la quantité totale
-        original_qty -= qty
-        print("new qty =", original_qty)
-        #sold_stock.quantity = original_qty
-        #sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
+    sold_stock.delete()
 
     # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
     print(f"Ajout de ${total_current} à notre wallet de {wallet}")
@@ -298,7 +304,7 @@ def sell_all(req, id, qty, bought_price, current_price):
     return redirect(simulator)
 
 
-# Fonction de vente des stocks suivant la quantité et l'ID entrées par l'utilisateur (pour des raisons de tests, on ne supprime pas encore le(s) stock(s) vendu(s) de la BDD)
+# Fonction de vente des stocks suivant la quantité et l'ID entrées par l'utilisateur
 def sell(req):
     # on commence par récupérer le wallet de l'utilisateur
     user_wallet = Wallet.objects.get(user=req.user)
@@ -342,25 +348,25 @@ def sell(req):
         change = float(total_current) - float(total_original)
 
         if change < 0:
-            print("sold at a loss")
+            #print("sold at a loss")
             messages.error(req, "You've sold at a loss...")
         else:
-            print("You've sold for a profit!")
+            #print("You've sold for a profit!")
             messages.success(req, "You've sold for a profit!")
 
         # on a tout vendu, on peut supprimer le stock (pour tester on se contente juste d'un print pour le moment)
         if qty == original_qty:
-            print("Needs to be deleted due to quantity sold")
-            # sold_stock.delete()
+            #print("Needs to be deleted due to quantity sold")
+            sold_stock.delete()
         else:
         # sinon on soustrait la quantité vendue à la quantité totale
             original_qty -= qty
-            print("new qty =", original_qty)
-            #sold_stock.quantity = original_qty
-            #sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
+            #print("new qty =", original_qty)
+            sold_stock.quantity = original_qty
+            sold_stock.save()  # on enregistre la nouvelle quantité dans la BDD
 
         # on met le wallet à jour avec ce qu'on vient de gagner ou perdre
-        print(f"Ajout de ${total_current} à notre wallet de {wallet}")
+        #print(f"Ajout de ${total_current} à notre wallet de {wallet}")
         new_wallet = wallet + total_current
         user_wallet.wallet = new_wallet
         user_wallet.save()
@@ -476,7 +482,6 @@ def scatter(ticker, ts):
 
 
 # Pour que l'utilisateur enregistre son compte sur le site
-# TODO: vérifier que le mot de passe soit identique : pw1 == pw2, je pense qu'il faut directement modifier à partir de forms.py => fait dans forms.py
 def register(req):
     if req.method == 'POST':
         form = RegisterForm(req.POST)
