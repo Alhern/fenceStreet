@@ -38,8 +38,8 @@ PROD_URL = 'https://cloud.iexapis.com/stable'
 
 # Switch ici entre la sandbox et la prod
 # (/!\ SANDBOX_URL avec TOKEN_S, PROD_URL avec TOKEN_P)
-BASE_URL = SANDBOX_URL
-BASE_TOKEN = TOKEN_S
+BASE_URL = PROD_URL
+BASE_TOKEN = TOKEN_P
 
 #################################
 
@@ -78,6 +78,17 @@ def home(req):
             # on initialise TimeSeries pour pouvoir réaliser 2 graphiques concernant l'entreprise demandée via des appels aux fonctions candlestick() et scatter()
             ts = TimeSeries(key=TOKEN_ALPHA, output_format='pandas')
 
+            # si on utilise pandas pour les graphiques, on utilise un format JSON pour récupérer des infos sur AV
+            # on récupère ici via AV des infos concernant "open", "high", "low", et "volume". Ces informations ne
+            # sont plus librement disponibles au public via IEX Cloud donc voici une parade
+            ts_json = TimeSeries(key=TOKEN_ALPHA)
+
+            try:
+                alpha_data, meta_data = ts_json.get_quote_endpoint(ticker)
+            except ValueError as e:
+                print(e)
+                return 404
+
             session = requests.Session()
 
             stock_data = session.get(f'{BASE_URL}/stock/{ticker}/quote?token={BASE_TOKEN}')
@@ -105,7 +116,8 @@ def home(req):
                 news = 404
 
             return render(req, 'home.html',
-                      {'stock': stock,
+                      {'alpha_data': alpha_data,
+                       'stock': stock,
                        'news': news,
                        'company': company,
                        'candlestick': candlestick(ticker, ts),
@@ -483,9 +495,13 @@ def scatter(ticker, ts):
         return "Scatter chart can't be displayed.\n"
     fig = go.Figure(data = [go.Scatter(x=data.index,
                                        y=data['4. close'],
-                                       name = 'Scatter',
+                                       name='Close price',
                                        line=dict(color='#566fff'))])
-    fig.layout.update(title=f'Closed prices for {ticker}',autosize = True,)
+    fig.add_trace(go.Scatter(x=data.index,
+                             y=data['1. open'],
+                             name='Open price',
+                             line=dict(color='#f4b684')))
+    fig.layout.update(title=f'Opening & Closing prices for {ticker}', autosize=True,)
     fig.update_xaxes(rangeslider_visible=False,)
     scatter = plot(fig, output_type='div')
     return scatter
