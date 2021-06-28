@@ -101,6 +101,18 @@
             <h5>Fundamentals</h5>
 
             <div class="row row-cols-2">
+            {% if alpha_data == 404 %}
+                <div class="col">Open: <b>0</b></div>
+                <div class="col">Volume: <b>0</b></div>
+                <div class="col">High: <b>0</b></div>
+                <div class="col">Average volume: <b>{{stock.avgTotalVolume | num_format}}</b></div>
+                <div class="col">Low: <b>0</b></div>
+                <div class="col">Market cap: <b>{{stock.marketCap | num_format}}</b></div>
+                <div class="col">Week 52 High: <b>{{stock.week52High}}</b></div>
+                <div class="col">P/E ratio: <b>{{stock.peRatio}}</b></div>
+                <div class="col">Week 52 Low: <b>{{stock.week52Low}}</b></div>
+                <div class="col">YTD Change: <b>{{stock.ytdChange|stringformat:".3f"}}</b></div>
+            {% else %}
                 <div class="col">Open: <b>{{alpha_data | get_key:"02. open" }}</b></div>
                 <div class="col">Volume: <b>{{alpha_data | get_key:"06. volume" }}</b></div>
                 <div class="col">High: <b>{{ alpha_data | get_key:"03. high" }}</b></div>
@@ -111,6 +123,7 @@
                 <div class="col">P/E ratio: <b>{{stock.peRatio}}</b></div>
                 <div class="col">Week 52 Low: <b>{{stock.week52Low}}</b></div>
                 <div class="col">YTD Change: <b>{{stock.ytdChange|stringformat:".3f"}}</b></div>
+            {% endif %}
             </div>
 
         {% endif %}

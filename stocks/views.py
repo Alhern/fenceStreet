@@ -87,7 +87,7 @@ def home(req):
                 alpha_data, meta_data = ts_json.get_quote_endpoint(ticker)
             except ValueError as e:
                 print(e)
-                return 404
+                alpha_data = 404
 
             session = requests.Session()
 
