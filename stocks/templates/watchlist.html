@@ -47,7 +47,7 @@
                     <td>{{stock.marketCap |num_format}}</td>
                     <td>{{stock.week52High}}</td>
                     <td>{{stock.week52Low}}</td>
-                    <td><a href="{% url 'delete' stock.symbol %}">X</a></td>
+                    <td><a style="text-decoration: none" href="{% url 'delete' stock.symbol %}"><b>X</b></a></td>
                 </tr>
             {% endfor %}
             </tbody>

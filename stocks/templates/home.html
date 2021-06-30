@@ -166,16 +166,16 @@
 
         {% else %}
             <h5>Latest news</h5>
-            <div class="card-group">
+            <div style="text-align:justify" class="card-group">
 
                 {% for item in news %}
                     <div class="card px-3 border-0 d-flex flex-column justify-content-between" style="max-width: 14rem;">
-                        <img class="card-img-top" src={{ item.image }}>
                         <div class="card-body">
+                            <img class="card-img-top" src={{ item.image }}>
                             <h6 class="card-title">
-                                <b><a href={{ item.url }}>{{ item.headline }}</a></b>
+                                <b><a style="text-decoration:none;font-size: small" href={{ item.url }}>{{ item.headline }}</a></b>
                             </h6>
-                            <small class="text-muted">Source: {{ item.source }}</small>
+                            <p style="font-size: x-small" class="text-muted">Source: {{ item.source }}</p>
                         </div>
                     </div>
                     <br><br>

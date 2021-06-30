@@ -269,7 +269,7 @@ def simulator(req):
                                               'history': history})
 
 
-# Fonction de vente de tous les stocks sélectionnés (pour des raisons de tests, on ne supprime pas encore les stocks vendus de la BDD)
+# Fonction de vente de tous les stocks sélectionnés
 # UPDATE : le 25/06/21, refonte de la fonction qui avait une sacré vulnérabilité,
 # illustration : sell_all/18/4/205.83/204.2 envoie les informations suivantes à la fonction :
 # vendre 4 actions du #18 achetées à 205.83 et qui coûtent maintenant 204.2, absolument rien n'empêchait
