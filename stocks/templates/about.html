@@ -1,5 +1,58 @@
 <title>About page</title>
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h2>This is the about page</h2>
+<h2>About</h2>
+    <p style="text-align:justify">
+        Fence Street is a New York Stock Exchange simulator, this project was created at Université Paris VIII in 2021.
+        <br>
+        <br>
+        You can freely check stock quotes, get the latest informations, news and access different charts
+        (Intraday time series, opening & closing prices, and daily charts under Watchlist) for companies' stocks listed on the NYSE.
+        <br>
+        <br>
+        If you register, you can have access to a <i>Watchlist</i> where you can add all the companies you're interested in so
+        you can easily follow them all in one place. Fundamental informations will be displayed for convenience.
+        <br>
+        <br>
+        Finally, you don't need to have money to try being a trader.
+        <br>
+        <br>
+        The <i>Simulator</i> is here for you, you will start with $25k dollars, the amount required to become a day trader in the USA.
+        You will be able to use this money to buy stocks and sell them under <i>"Order stock"</i>,
+        to buy a stock you simply need to add its ticker (symbol) under <i>'Ticker name'</i> and the quantity you would like to buy,
+        to sell them you will need to enter the ticker ID number of the stocks you want to get rid of and the amount you would like to sell.
+        You can also sell every stock you own for a company by clicking on the <i>"Sell All"</i> button on the right side.
+        <br>
+        <br>
+        The simulator displays your wallet and how much you currently have, the Portfolio table displays the oldest
+        stock you bought at the top, the most recent one at the bottom. You will see the stock's ID number, its ticker,
+        the quantity you bought and how much you bought it for, next to it you will see its current price in realtime,
+        how much of a difference it is compared to when you bought it and under <i>'Total Value'</i> is the amount you would
+        make if you sold it all now.
+        <br>
+        <br>
+        At the bottom you will find your <i>Transaction history</i>, it will keep track of all your transactions, the date and time when you bought something or sold something,
+        how much you bought or sold, what it was and how much you made or lost.
+        <br>
+        <br>
+        <h3>Credits</h3>
+
+        This app mainly uses 2 APIs: <i><b>IEX Cloud</b></i> and <i><b>Alpha Vantage</b></i> and was built with:
+        <br>
+        <br>
+        <ul>
+            <li>Python 3</li>
+            <li>Django</li>
+            <li>HTML/CSS/Javascript</li>
+            <li>Bootstrap</li>
+            <li>SQLite</li>
+            <li>PyCharm</li>
+            <li>Git/Github</li>
+            <li>Widgets by TradingView</li>
+        </ul>
+
+    If there's any issue displaying data or charts, try again a minute later as it might be tied to API restrictions.
+
+    </p>
 {% endblock %}
