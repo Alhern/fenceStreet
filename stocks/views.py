@@ -163,6 +163,8 @@ def simulator(req):
 
     current_prices = []
 
+    bought_and_current = None
+
     # cette boucle nous permet de récupérer toutes les infos du Portfolio de l'utilisateur pour les placer dans des listes
     for i in portfolio:
         portfolio_id.append(i.id)
