@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 
 from .models import Stock, Portfolio, Wallet, History
-from .forms import StockForm, RegisterForm, LoginForm
+from .forms import StockForm, RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 
@@ -561,5 +563,39 @@ def user_logout(req):
     messages.success(req, "Logged out successfully!")
     return render(req, 'logged_out.html', {})
 
-
+#View pour afficher le profile (ne s'affiche que si on est connecté)
+@login_required
+def profile(req):
+    if req.method == 'POST':
+        user_form = UpdateUserForm(req.POST, instance=req.user)
+        profile_form = UpdateProfileForm(req.POST, req.FILES, instance=req.user.profile)
+        change_pswd_form = PasswordChangeForm(req.user, req.POST)
+            
+        #Soit on update l'email, le nom d'utilisateur et la photo
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(req, "Profile updated succesfully!")
+            return redirect(profile)
+        #soit on update le password 
+        elif change_pswd_form.is_valid():
+            user = change_pswd_form.save()
+            update_session_auth_hash(req, user)
+            messages.success(req, "Password updated succesfully!")
+            return redirect(profile)
+        else:
+            messages.error(req, "Something went wrong!")
+            
+    else:
+        user_form = UpdateUserForm(instance=req.user)
+        profile_form = UpdateProfileForm(instance=req.user.profile)
+        change_pswd_form = PasswordChangeForm(req.user)
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'change_pswd_form': change_pswd_form
+    }
+    
+    return render(req, 'profile.html', context)
 
