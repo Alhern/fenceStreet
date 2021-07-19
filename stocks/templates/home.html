@@ -24,8 +24,10 @@
             <h1 style="text-align:center"><b>Welcome to Fence Street</b> <i class="fas fa-comment-dollar"></i></h1>
 
         {% else %}
-
-            <h1 style="text-align:center"><b>Hey {{ user.get_username }}</b></h1>
+            <div class="home-page-pic">
+                <h1><b>Hey {{ user.get_username }}</b></h1>
+                <img class="rounded-circle" src="{{ user.profile.image.url }}">
+            </div>
 
         {% endif %}
 

@@ -22,6 +22,75 @@
     .navbar-custom {
     background-color: #0c3d2c;
 }
+
+    .profile-page {
+    background: #ffffff;
+    width: 600px;
+    height: 400px
+    padding: 10px 20px;
+    border: 5px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    text-align: left;
+    overflow: auto;
+}
+
+    .profile-page img {
+    height: 125px;
+    width: 125px;
+    margin-left: 10px;
+    margin-right: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    float: left;
+}
+
+    .profile-page h3 {
+    font-size: 2.5rem;
+    margin-top: 60px;
+    margin-left: 15px;
+    display:block;
+}
+
+    .profile-page span {
+    margin-left: 15px;
+    display:block;
+    margin: 2px 0 0 0;
+}
+
+    .profile-modif {
+    width: 600px;
+    height: 600px
+    padding: 10px 20px;
+    border: 5px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    text-align: left;
+    overflow: auto;
+}
+
+    .profile-modif  form {
+    padding: 10px;
+}
+
+    .home-page-pic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .home-page-pic img {
+    height: 40px;
+    width: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+    .home-page-pic h1 {
+    display: inline-block;
+}
 </style>
 
 <body>
@@ -52,6 +121,10 @@
                         <a class="nav-link" href="{% url 'simulator' %}">Simulator</a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
