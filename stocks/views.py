@@ -578,11 +578,13 @@ def profile(req):
             messages.success(req, "Profile updated succesfully!")
             return redirect(profile)
         #soit on update le password 
-        if change_pswd_form.is_valid():
+        elif change_pswd_form.is_valid():
             user = change_pswd_form.save()
             update_session_auth_hash(req, user)
             messages.success(req, "Password updated succesfully!")
             return redirect(profile)
+        else:
+            messages.error(req, "Something went wrong!")
             
     else:
         user_form = UpdateUserForm(instance=req.user)
