@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div>
+        <div class="profile-page">
+            <img class="rounded-circle" src="{{ user.profile.image.url }}">
+            <h3>{{ user.username }}</h3>
+            <span>{{ user.email }}</span>
+        </div>
+        <div class="profile-modif">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ profile_form.as_p }}
+                {{ user_form.as_p }}
+                <p><button type="submit" class="btn btn-primary">Update Profile</button></p>
+            </form>
+        </div>
+        <div class="profile-modif">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ change_pswd_form.as_p }}
+                <p><button type="submit" class="btn btn-primary">Update Password</button></p>
+            </form>
+        </div>
+    </div>
+{% endblock %}
